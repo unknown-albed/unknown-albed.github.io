@@ -14,7 +14,7 @@ This project provides a simple web page where users can find answers to frequent
 
 ## Usage
 
-To use this project, simply open the `.html` file in your web browser. You can search for questions using the search bar, and click the "Add Question & Answer" button to add new questions and answers.
+To use this project, simply open the `[.html](https://unknown-albed.github.io/salvation-trip)` file in your web browser. You can search for questions using the search bar, and click the "Add Question & Answer" button to add new questions and answers.
 
 ## Contributing
 
