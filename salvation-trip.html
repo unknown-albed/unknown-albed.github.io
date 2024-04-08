@@ -132,45 +132,38 @@
             faqList.appendChild(li);
         }
 
-        // Fetch data from data.json
-        fetch('https://unknown-albed.github.io/data.json')
-            .then(response => response.json())
+        // Function to send a POST request to update data.json
+        function updateDataJSON(question, answer) {
+            fetch('https://unknown-albed.github.io/data.json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ question, answer }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to update data.json');
+                }
+                return response.json();
+            })
             .then(data => {
-                // Add each question-answer pair to the FAQ list
-                data.forEach(item => {
-                    addQA(item.question, item.answer);
-                });
+                console.log('Data.json updated successfully:', data);
             })
             .catch(error => {
-                console.error('Error fetching data:', error);
+                console.error('Error updating data.json:', error);
             });
-
-        // Add event listener for input changes
-        searchInput.addEventListener('input', function() {
-            const searchTerm = searchInput.value.toLowerCase();
-            
-            // Loop through each FAQ item
-            Array.from(faqList.getElementsByTagName('li')).forEach(function(item) {
-                const question = item.querySelector('h2').textContent.toLowerCase();
-                const answer = item.querySelector('p').textContent.toLowerCase();
-                
-                // Check if the search term matches the question or answer
-                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
-                    item.style.display = 'block'; // Show the item
-                } else {
-                    item.style.display = 'none'; // Hide the item
-                }
-            });
-        });
+        }
 
         // Event listener for the add button
         addButton.addEventListener('click', function() {
             const question = prompt('Enter the question:');
             const answer = prompt('Enter the answer:');
-            
-            // Add the new question-answer pair
+
+            // Check if the question already exists
             if (question && answer) {
                 addQA(question, answer);
+                updateDataJSON(question, answer);
             }
         });
     </script>
