@@ -52,22 +52,6 @@
             border-radius: 5px;
         }
 
-        #addButton {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        #addButton:hover {
-            background-color: #0056b3;
-        }
-
         #faqList {
             list-style-type: none;
             padding: 0;
@@ -108,19 +92,30 @@
         <!-- Add a search input field -->
         <input type="text" id="searchInput" placeholder="Search questions...">
         
-        <!-- Button to add more question-answer pairs -->
-        <button id="addButton">Add Question & Answer</button>
-        
         <ul id="faqList">
-            <!-- Questions and answers will be dynamically added here -->
+            <!-- Questions and answers from data.json will be dynamically added here -->
         </ul>
     </div>
 
     <script>
-        // JavaScript for filtering the FAQ list based on user input
+        // JavaScript for fetching data from data.json and populating the FAQ list
         const searchInput = document.getElementById('searchInput');
         const faqList = document.getElementById('faqList');
-        const addButton = document.getElementById('addButton');
+
+        // Function to fetch data from data.json and populate the FAQ list
+        async function fetchDataAndPopulate() {
+            try {
+                const response = await fetch('https://unknown-albed.github.io/data.json');
+                const data = await response.json();
+                
+                // Populate the FAQ list
+                data.forEach(({ question, answer }) => {
+                    addQA(question, answer);
+                });
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
 
         // Function to add a new question-answer pair
         function addQA(question, answer) {
@@ -132,40 +127,26 @@
             faqList.appendChild(li);
         }
 
-        // Function to send a POST request to update data.json
-        function updateDataJSON(question, answer) {
-            fetch('https://unknown-albed.github.io/data.json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ question, answer }),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to update data.json');
+        // Event listener for input changes (search functionality)
+        searchInput.addEventListener('input', function() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            // Loop through each FAQ item
+            Array.from(faqList.getElementsByTagName('li')).forEach(function(item) {
+                const question = item.querySelector('h2').textContent.toLowerCase();
+                const answer = item.querySelector('p').textContent.toLowerCase();
+                
+                // Check if the search term matches the question or answer
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block'; // Show the item
+                } else {
+                    item.style.display = 'none'; // Hide the item
                 }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Data.json updated successfully:', data);
-            })
-            .catch(error => {
-                console.error('Error updating data.json:', error);
             });
-        }
-
-        // Event listener for the add button
-        addButton.addEventListener('click', function() {
-            const question = prompt('Enter the question:');
-            const answer = prompt('Enter the answer:');
-
-            // Check if the question already exists
-            if (question && answer) {
-                addQA(question, answer);
-                updateDataJSON(question, answer);
-            }
         });
+
+        // Call the function to fetch data and populate the FAQ list
+        fetchDataAndPopulate();
     </script>
 </body>
 </html>
