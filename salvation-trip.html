@@ -417,12 +417,7 @@
                 <h2>Which Star Consort is related to Shen Zhe?</h2>
                 <p>Answer: An Yun</p>
             </li>
-            // Define sample data (question-answer pairs)
-            const sampleData = [
-                { question: "Sample Question 1", answer: "Sample Answer 1" },
-                { question: "Sample Question 2", answer: "Sample Answer 2" },
-                // Add more question-answer pairs as needed
-            ];        
+
         </ul>
     </div>
 
@@ -442,7 +437,12 @@
             `;
             faqList.appendChild(li);
         }
-
+        // Sample questions and answers
+        const sampleData = [
+            { question: 'Question 1', answer: 'Answer to question 1' },
+            { question: 'Question 2', answer: 'Answer to question 2' },
+            // Add more sample questions and answers here
+        ];
         // Add sample questions and answers to the FAQ list
         sampleData.forEach(data => {
             addQA(data.question, data.answer);
