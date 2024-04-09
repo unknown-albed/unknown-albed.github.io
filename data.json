@@ -354,13 +354,5 @@
     {
         "question": "What is the largest cat?",
         "answer": "Tiger"
-    },
-    {
-        "question": "test02",
-        "answer": "test02"
-    },
-    {
-        "question": "test03",
-        "answer": "test03"
     }
 ]
