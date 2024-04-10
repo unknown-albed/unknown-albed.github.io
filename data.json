@@ -354,5 +354,13 @@
     {
         "question": "What is the largest cat?",
         "answer": "Tiger"
+    },
+    {
+        "question": "Which of the following areas is irrelevant to Sea Fishing Event?",
+        "answer": "Submerged Rocks"
+    },
+    {
+        "question": "What is the Prized Collection of Mohist Maze?",
+        "answer": "Rectangular Win Vessel"
     }
 ]
