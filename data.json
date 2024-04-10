@@ -374,5 +374,9 @@
     {
         "question": "What's the first planet discovered with a telescope?",
         "answer": "Uranus"
+    },
+    {
+        "question": "In Mohist Maze, What's the item turning a basic ingredient into a Burr Puzzle?",
+        "answer": "Lucky Gourd"
     }
 ]
