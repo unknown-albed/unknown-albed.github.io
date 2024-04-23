@@ -4,111 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Salvation Trip Questions & Answers</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Add CSS for layout and styling */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-        }
-
-        #header {
-            position: relative;
-            text-align: center;
-            height: auto;
-        }
-
+        /* Custom CSS adjustments */
         #header img {
-            max-width: 100%;
-            height: auto;
             border-top-left-radius: 50%; /* Curved edge for top-left corner */
             border-top-right-radius: 50%; /* Curved edge for top-right corner */
         }
 
         #container {
             max-width: 800px;
-            width: 90%;
             margin: auto;
             padding: 20px;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
-            overflow-y: auto;
-            max-height: calc(100vh - 200px); /* Adjust based on header height */
-        }
-
-        h1 {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        #searchInput {
-            width: 100%;
-            margin-bottom: 20px;
-            padding: 10px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        #faqList {
-            list-style-type: none;
-            padding: 0;
         }
 
         #faqList li {
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            background-color: #fff; /* Ensure background color for light mode */
         }
 
-        /* Media query for dark mode */
         @media (prefers-color-scheme: dark) {
             body {
                 background-color: #333;
                 color: #fff;
             }
 
-            #container {
+            #container, #faqList li {
                 background-color: #444;
-            }
-
-            #faqList li {
-                background-color: #555;
             }
         }
     </style>
 </head>
-<body>
-    <div id="header">
-        <img src="https://github.com/unknown-albed/unknown-albed.github.io/blob/main/Wallpaper-11.jpg?raw=true" alt="Header Image">
+<body class="bg-dark">
+    <div id="header" class="mb-4 d-flex justify-content-center">
+        <img src="https://github.com/unknown-albed/unknown-albed.github.io/blob/main/Wallpaper-11.jpg?raw=true" alt="Header Image" class="img-fluid">
     </div>
 
-    <div id="container">
-        <h1>Frequently Asked Questions Salvation Trip</h1>
-        
-        <!-- Add a search input field -->
-        <input type="text" id="searchInput" placeholder="Search questions...">
-        
-        <ul id="faqList">
-            <!-- Questions and answers from data.json will be dynamically added here -->
+    <div class="container" id="container">
+        <h1 class="text-center mb-4">Frequently Asked Questions Salvation Trip</h1>
+        <div class="input-group mb-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search questions...">
+        </div>
+        <ul id="faqList" class="list-unstyled">
+            <!-- Questions and answers will be dynamically added here -->
         </ul>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // JavaScript for fetching data from data.json and populating the FAQ list
         const searchInput = document.getElementById('searchInput');
         const faqList = document.getElementById('faqList');
 
-        // Function to fetch data from data.json and populate the FAQ list
         async function fetchDataAndPopulate() {
             try {
                 const response = await fetch('https://unknown-albed.github.io/data.json');
                 const data = await response.json();
-                
-                // Populate the FAQ list
                 data.forEach(({ question, answer }) => {
                     addQA(question, answer);
                 });
@@ -117,35 +70,25 @@
             }
         }
 
-        // Function to add a new question-answer pair
         function addQA(question, answer) {
             const li = document.createElement('li');
+            li.className = 'p-3 mb-2 border rounded';
             li.innerHTML = `
-                <h2>${question}</h2>
-                <p>Answer: ${answer}</p>
+                <h4>${question}</h4>
+                <p class="text-info">Answer: ${answer}</p>
             `;
             faqList.appendChild(li);
         }
 
-        // Event listener for input changes (search functionality)
         searchInput.addEventListener('input', function() {
             const searchTerm = searchInput.value.toLowerCase();
-            
-            // Loop through each FAQ item
             Array.from(faqList.getElementsByTagName('li')).forEach(function(item) {
-                const question = item.querySelector('h2').textContent.toLowerCase();
+                const question = item.querySelector('h4').textContent.toLowerCase();
                 const answer = item.querySelector('p').textContent.toLowerCase();
-                
-                // Check if the search term matches the question or answer
-                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
-                    item.style.display = 'block'; // Show the item
-                } else {
-                    item.style.display = 'none'; // Hide the item
-                }
+                item.style.display = (question.includes(searchTerm) || answer.includes(searchTerm)) ? 'block' : 'none';
             });
         });
 
-        // Call the function to fetch data and populate the FAQ list
         fetchDataAndPopulate();
     </script>
 </body>
