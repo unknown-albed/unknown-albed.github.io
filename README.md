@@ -1,5 +1,5 @@
 # Salvation Trip FAQ
-
+![Visitor Count](https://visitor-badge.glitch.me/badge?page_id=unknown-albed.unknown-albed.github.io/salvation-trip)
 This project is a Frequently Asked Questions (FAQ) page for the Salvation Trip game. It allows users to search for questions and answers related to the game.
 
 ## Description
