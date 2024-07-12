@@ -168,4 +168,12 @@
                 } else {
                     console.error('Failed to add Q&A:', response.statusText);
                 }
-            } catch (error
+            } catch (error) {
+                console.error('Error adding Q&A:', error);
+            }
+        });
+
+        fetchDataAndPopulate();
+    </script>
+</body>
+</html>
