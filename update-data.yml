@@ -1,42 +1,39 @@
-name: Update data.json
+name: Update Q&A
 
 on:
-  issues:
-    types: [opened]
+  workflow_dispatch:
+    inputs:
+      question:
+        description: 'Question'
+        required: true
+      answer:
+        description: 'Answer'
+        required: true
 
 jobs:
-  update-json:
+  update-qa:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Update data.json
+      - name: Add new Q&A
         run: |
-          const fs = require('fs');
-          const path = './data.json';
-          const issue = process.env.ISSUE;
-          const newQA = {
-            question: issue.title,
-            answer: issue.body
-          };
-
-          let data = JSON.parse(fs.readFileSync(path, 'utf8'));
-          data.push(newQA);
-          fs.writeFileSync(path, JSON.stringify(data, null, 2));
-
-        env:
-          ISSUE: ${{ toJson(github.event.issue) }}
-
-      - name: Commit and push changes
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          QUESTION="${{ github.event.inputs.question }}"
+          ANSWER="${{ github.event.inputs.answer }}"
+          echo "Adding new Q&A: $QUESTION - $ANSWER"
+          # Fetch the latest data.json
+          git pull
+          # Decode the data.json file
+          DATA=$(cat data.json | base64 --decode)
+          # Add new question and answer
+          NEW_DATA=$(echo "$DATA" | jq ". += [{\"question\": \"$QUESTION\", \"answer\": \"$ANSWER\"}]")
+          # Encode and update data.json
+          echo "$NEW_DATA" | base64 > data.json
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add data.json
-          git commit -m "Update data.json with new Q&A from issue #${{ github.event.issue.number }}"
+          git commit -m "Add new Q&A: $QUESTION"
           git push
+    env:
+      GITHUB_TOKEN: ${{ secrets.QANDATOKEN }}
