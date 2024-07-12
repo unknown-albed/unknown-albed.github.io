@@ -38,6 +38,21 @@
             #container, #faqList li {
                 background-color: #444;
             }
+
+            .modal-content {
+                background-color: #333;
+                color: #fff;
+            }
+
+            .form-control {
+                background-color: #555;
+                color: #fff;
+                border: 1px solid #777;
+            }
+
+            .form-control::placeholder {
+                color: #ccc;
+            }
         }
     </style>
 </head>
@@ -47,7 +62,9 @@
     </div>
 
     <div class="container" id="container">
-        <h1 class="text-center mb-4">Salvation Trip Q&A: <span id="questionCounter"></span></h1>
+        <h1 class="text-center mb-4">Salvation Trip Q&A: <span id="questionCounter"></span>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addQAModal">Add Q&A</button>
+        </h1>
         <div class="input-group mb-3">
             <input type="text" id="searchInput" class="form-control" placeholder="Search questions...">
         </div>
@@ -56,10 +73,36 @@
         </ul>
     </div>
 
+    <!-- Add Q&A Modal -->
+    <div class="modal fade" id="addQAModal" tabindex="-1" aria-labelledby="addQAModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addQAModalLabel">Add a New Q&A</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addQAForm">
+                        <div class="mb-3">
+                            <label for="newQuestion" class="form-label">Question</label>
+                            <input type="text" class="form-control" id="newQuestion" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newAnswer" class="form-label">Answer</label>
+                            <textarea class="form-control" id="newAnswer" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Q&A</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const searchInput = document.getElementById('searchInput');
         const faqList = document.getElementById('faqList');
+        const addQAForm = document.getElementById('addQAForm');
 
         async function fetchDataAndPopulate() {
             try {
@@ -80,7 +123,7 @@
             li.className = 'p-3 mb-2 border rounded';
             li.innerHTML = `
                 <h4>${question}</h4>
-                <p class="text-info">Answer: ${answer}</p>
+                <p class="text-info"><strong>Answer:</strong> ${answer}</p>
             `;
             faqList.appendChild(li);
         }
@@ -92,6 +135,20 @@
                 const answer = item.querySelector('p').textContent.toLowerCase();
                 item.style.display = (question.includes(searchTerm) || answer.includes(searchTerm)) ? 'block' : 'none';
             });
+        });
+
+        addQAForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const newQuestion = document.getElementById('newQuestion').value;
+            const newAnswer = document.getElementById('newAnswer').value;
+            addQA(newQuestion, newAnswer);
+            // Optionally, reset form and close modal
+            addQAForm.reset();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addQAModal'));
+            modal.hide();
+            // Update the question counter
+            const currentCount = parseInt(document.getElementById('questionCounter').textContent.match(/\d+/)[0]);
+            document.getElementById('questionCounter').textContent = `(${currentCount + 1})`;
         });
 
         fetchDataAndPopulate();
