@@ -142,7 +142,7 @@
             const response = await fetch('https://api.github.com/repos/unknown-albed/unknown-albed.github.io/contents/data.json', {
                 method: 'GET',
                 headers: {
-                    'Authorization': `token ${QANDATOKEN}`
+                    'Authorization': `token ${githubToken}`
                 }
             });
 
@@ -161,7 +161,7 @@
             const updateResponse = await fetch('https://api.github.com/repos/unknown-albed/unknown-albed.github.io/contents/data.json', {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `token ${QANDATOKEN}`,
+                    'Authorization': `token ${githubToken}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
