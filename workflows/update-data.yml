@@ -1,0 +1,42 @@
+name: Update data.json
+
+on:
+  workflow_dispatch:
+    inputs:
+      question:
+        description: 'Question to add'
+        required: true
+      answer:
+        description: 'Answer to add'
+        required: true
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Update data.json
+        run: |
+          # Fetch the existing data.json content
+          curl -H "Authorization: token ${{ secrets.QANDATOKEN }}" \
+               -H "Accept: application/vnd.github.v3.raw" \
+               -o data.json \
+               https://raw.githubusercontent.com/${{ github.repository }}/main/data.json
+          
+          # Add new question and answer to data.json
+          jq --arg question "${{ github.event.inputs.question }}" --arg answer "${{ github.event.inputs.answer }}" \
+            '. += [{"question": $question, "answer": $answer}]' data.json > updated_data.json
+
+          # Move the updated content back to data.json
+          mv updated_data.json data.json
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          git commit -m "Add new Q&A: ${{ github.event.inputs.question }}"
+          git push
