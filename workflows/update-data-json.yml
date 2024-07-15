@@ -2,8 +2,13 @@ name: Update data.json
 
 on:
   workflow_dispatch:
-  issues:
-    types: [opened]
+    inputs:
+      question:
+        description: 'The question to add'
+        required: true
+      answer:
+        description: 'The answer to add'
+        required: true
 
 jobs:
   update-json:
@@ -23,7 +28,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.QANDATOKEN }}
       run: |
         echo 'Updating data.json'
-        node update-data-json.js
+        node update-data-json.js "${{ github.event.inputs.question }}" "${{ github.event.inputs.answer }}"
+
     - name: Commit and push changes
       run: |
         git config --global user.name 'github-actions[bot]'
