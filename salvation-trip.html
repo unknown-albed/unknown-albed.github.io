@@ -105,12 +105,13 @@
         const faqList = document.getElementById('faqList');
         const addQAForm = document.getElementById('addQAForm');
         const statusMessage = document.getElementById('statusMessage');
-        const githubToken = 'QANDATOKEN';  // Using the environment variable QANDATOKEN
+        const githubToken = '${{ secrets.QANDATOKEN }}'; 
 
         async function fetchDataAndPopulate() {
             try {
                 const response = await fetch('https://unknown-albed.github.io/data.json');
                 const data = await response.json();
+                faqList.innerHTML = ''; // Clear existing content
                 data.forEach(({ question, answer }) => {
                     addQA(question, answer);
                 });
