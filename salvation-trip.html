@@ -143,12 +143,11 @@
         });
 
         async function createIssue(newQuestion, newAnswer) {
-            const token = 'YOUR_PERSONAL_ACCESS_TOKEN'; // replace with your personal access token
             try {
                 const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `token ${token}`,
+                        'Authorization': `token YOUR_PERSONAL_ACCESS_TOKEN`, // Use a token with repo and workflow scope
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
