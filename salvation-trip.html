@@ -58,7 +58,7 @@
 </head>
 <body class="bg-dark">
     <div id="header" class="mb-4 d-flex justify-content-center">
-        <img src="https://github.com/unknown-albed.github.io/blob/main/Wallpaper-11.jpg?raw=true" alt="Header Image" class="img-fluid">
+        <img src="https://github.com/unknown-albed/unknown-albed.github.io/blob/main/Wallpaper-11.jpg?raw=true" alt="Header Image" class="img-fluid">
     </div>
 
     <div class="container" id="container">
@@ -105,9 +105,10 @@
         const faqList = document.getElementById('faqList');
         const addQAForm = document.getElementById('addQAForm');
         const statusMessage = document.getElementById('statusMessage');
-        const owner = 'your-github-username'; // replace with your GitHub username
+        const owner = 'unknown-albed'; // replace with your GitHub username
         const repo = 'unknown-albed.github.io'; // replace with your repository name
         const workflow_id = 'update-data-json.yml'; // workflow file name
+        const token = 'YOUR_PERSONAL_ACCESS_TOKEN'; // replace with your personal access token
 
         async function fetchDataAndPopulate() {
             try {
@@ -148,7 +149,7 @@
                 const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow_id}/dispatches`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `token YOUR_PERSONAL_ACCESS_TOKEN`, // Use a token with repo and workflow scope
+                        'Authorization': `token ${token}`, // Use a token with repo and workflow scope
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
