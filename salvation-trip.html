@@ -107,8 +107,6 @@
         const statusMessage = document.getElementById('statusMessage');
         const owner = 'unknown-albed'; // replace with your GitHub username
         const repo = 'unknown-albed.github.io'; // replace with your repository name
-        const workflow_id = 'update-data-json.yml'; // workflow file name
-        const token = 'YOUR_PERSONAL_ACCESS_TOKEN'; // replace with your personal access token
 
         async function fetchDataAndPopulate() {
             try {
@@ -144,32 +142,30 @@
             });
         });
 
-        async function triggerWorkflow(newQuestion, newAnswer) {
+        async function createIssue(newQuestion, newAnswer) {
+            const token = 'YOUR_PERSONAL_ACCESS_TOKEN'; // replace with your personal access token
             try {
-                const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow_id}/dispatches`, {
+                const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `token ${token}`, // Use a token with repo and workflow scope
+                        'Authorization': `token ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        ref: 'main', // or the branch you want to trigger the workflow on
-                        inputs: {
-                            question: newQuestion,
-                            answer: newAnswer
-                        }
+                        title: newQuestion,
+                        body: newAnswer
                     })
                 });
 
                 if (response.ok) {
-                    console.log('Workflow dispatched successfully');
+                    console.log('Issue created successfully');
                     statusMessage.textContent = 'Q&A added successfully!';
                     statusMessage.className = 'alert alert-success';
                 } else {
-                    throw new Error('Error dispatching workflow');
+                    throw new Error('Error creating issue');
                 }
             } catch (error) {
-                console.error('Error dispatching workflow:', error);
+                console.error('Error creating issue:', error);
                 statusMessage.textContent = 'Failed to add Q&A. See console for details.';
                 statusMessage.className = 'alert alert-danger';
             }
@@ -181,7 +177,7 @@
             const newAnswer = document.getElementById('newAnswer').value;
 
             try {
-                await triggerWorkflow(newQuestion, newAnswer);
+                await createIssue(newQuestion, newAnswer);
                 addQA(newQuestion, newAnswer);
                 addQAForm.reset();
                 const modal = bootstrap.Modal.getInstance(document.getElementById('addQAModal'));
