@@ -1,9 +1,9 @@
 name: Update data.json
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+  issues:
+    types: [opened]
 
 jobs:
   update-json:
@@ -18,16 +18,13 @@ jobs:
       with:
         node-version: '14'
 
-    - name: Install dependencies
-      run: npm install
-
-    - name: Run update script
+    - name: Update data.json
       env:
         GITHUB_TOKEN: ${{ secrets.QANDATOKEN }}
       run: |
+        echo 'Updating data.json'
         node update-data-json.js
-
-    - name: Commit changes
+    - name: Commit and push changes
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
