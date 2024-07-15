@@ -5,7 +5,7 @@ const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN
 });
 
-const owner = 'your-github-username'; // replace with your GitHub username
+const owner = 'unknown-albed'; // replace with your GitHub username
 const repo = 'unknown-albed.github.io'; // replace with your repository name
 const path = 'data.json'; // path to the file in the repository
 
