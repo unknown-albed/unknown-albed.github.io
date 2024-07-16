@@ -4,18 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Salvation Trip Questions & Answers</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* Custom CSS adjustments */
         #header img {
-            border-top-left-radius: 50%; /* Curved edge for top-left corner */
-            border-top-right-radius: 50%; /* Curved edge for top-right corner */
+            border-top-left-radius: 50%;
+            border-top-right-radius: 50%;
             width: 100%;
-            max-width: 800px; /* Increase max-width to make the image wider */
+            max-width: 800px;
             height: auto;
         }
-
         #container {
             max-width: 800px;
             margin: auto;
@@ -24,32 +22,26 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
         }
-
         #faqList li {
-            background-color: #fff; /* Ensure background color for light mode */
+            background-color: #fff;
         }
-
         @media (prefers-color-scheme: dark) {
             body {
                 background-color: #333;
                 color: #fff;
             }
-
             #container, #faqList li {
                 background-color: #444;
             }
-
             .modal-content {
                 background-color: #333;
                 color: #fff;
             }
-
             .form-control {
                 background-color: #555;
                 color: #fff;
                 border: 1px solid #777;
             }
-
             .form-control::placeholder {
                 color: #ccc;
             }
@@ -60,7 +52,6 @@
     <div id="header" class="mb-4 d-flex justify-content-center">
         <img src="https://github.com/unknown-albed/unknown-albed.github.io/blob/main/Wallpaper-11.jpg?raw=true" alt="Header Image" class="img-fluid">
     </div>
-
     <div class="container" id="container">
         <h1 class="text-center mb-4">Salvation Trip Q&A: <span id="questionCounter"></span>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addQAModal">Add Q&A</button>
@@ -72,8 +63,6 @@
             <!-- Questions and answers will be dynamically added here -->
         </ul>
     </div>
-
-    <!-- Add Q&A Modal -->
     <div class="modal fade" id="addQAModal" tabindex="-1" aria-labelledby="addQAModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -98,25 +87,21 @@
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const searchInput = document.getElementById('searchInput');
         const faqList = document.getElementById('faqList');
         const addQAForm = document.getElementById('addQAForm');
         const statusMessage = document.getElementById('statusMessage');
-        const owner = 'unknown-albed'; // replace with your GitHub username
-        const repo = 'unknown-albed.github.io'; // replace with your repository name
 
         async function fetchDataAndPopulate() {
             try {
-                const response = await fetch('https://unknown-albed.github.io/data.json');
+                const response = await fetch('https://warmanx.pythonanywhere.com/api/questions');
                 const data = await response.json();
                 faqList.innerHTML = ''; // Clear existing content
                 data.forEach(({ question, answer }) => {
                     addQA(question, answer);
                 });
-                // Update the question counter
                 document.getElementById('questionCounter').textContent = `(${data.length})`;
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -142,48 +127,35 @@
             });
         });
 
-        async function createIssue(newQuestion, newAnswer) {
-            try {
-                const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `token YOUR_PERSONAL_ACCESS_TOKEN`, // Use a token with repo and workflow scope
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        title: newQuestion,
-                        body: newAnswer
-                    })
-                });
-
-                if (response.ok) {
-                    console.log('Issue created successfully');
-                    statusMessage.textContent = 'Q&A added successfully!';
-                    statusMessage.className = 'alert alert-success';
-                } else {
-                    throw new Error('Error creating issue');
-                }
-            } catch (error) {
-                console.error('Error creating issue:', error);
-                statusMessage.textContent = 'Failed to add Q&A. See console for details.';
-                statusMessage.className = 'alert alert-danger';
-            }
-        }
-
         addQAForm.addEventListener('submit', async function(event) {
             event.preventDefault();
             const newQuestion = document.getElementById('newQuestion').value;
             const newAnswer = document.getElementById('newAnswer').value;
 
             try {
-                await createIssue(newQuestion, newAnswer);
-                addQA(newQuestion, newAnswer);
-                addQAForm.reset();
-                const modal = bootstrap.Modal.getInstance(document.getElementById('addQAModal'));
-                modal.hide();
-                const currentCount = parseInt(document.getElementById('questionCounter').textContent.match(/\d+/)[0]);
-                document.getElementById('questionCounter').textContent = `(${currentCount + 1})`;
+                const response = await fetch('https://warmanx.pythonanywhere.com/api/questions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ question: newQuestion, answer: newAnswer })
+                });
+
+                if (response.ok) {
+                    const addedQA = await response.json();
+                    addQA(addedQA.question, addedQA.answer);
+                    addQAForm.reset();
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addQAModal'));
+                    modal.hide();
+                    const currentCount = parseInt(document.getElementById('questionCounter').textContent.match(/\d+/)[0]);
+                    document.getElementById('questionCounter').textContent = `(${currentCount + 1})`;
+                    statusMessage.textContent = 'Q&A added successfully!';
+                    statusMessage.className = 'alert alert-success';
+                } else {
+                    throw new Error('Failed to add Q&A');
+                }
             } catch (error) {
+                console.error('Error adding Q&A:', error);
                 statusMessage.textContent = 'Failed to add Q&A. See console for details.';
                 statusMessage.className = 'alert alert-danger';
             }
